@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login</title>
+  <link href="./output.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+
+
+
+  <div class="flex flex-col items-center gap-6">
+
+        <a href="index.html" class="inline-flex items-center mb-6 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+          Terug naar de winkel
+    </a>
+
+    <div class="bg-white rounded-xl shadow-lg p-8 w-[360px]">
+      <h2 class="text-2xl font-bold text-center mb-6">Login</h2>
+
+      <form id="loginForm" class="space-y-5">
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            gebruikersnaam
+          </label>
+          <input
+            type="text"
+            id="username"
+            placeholder="admin"
+            class="w-full max-w-xs mx-auto block border border-gray-300 rounded-md px-3 py-2 text-sm
+                   focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            required
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            wachtwoord
+          </label>
+          <input
+            type="password"
+            id="password"
+            placeholder="••••••••"
+            class="w-full max-w-xs mx-auto block border border-gray-300 rounded-md px-3 py-2 text-sm
+                   focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            required
+          />
+        </div>
+
+        <p id="error" class="text-red-500 text-sm text-center hidden">
+          Onjuiste gebruikersnaam of wachtwoord
+        </p>
+
+        <button
+          type="submit"
+          class="w-full bg-indigo-500 hover:bg-indigo-600 transition
+                  font-semibold py-2 rounded-md text-sm text-white"
+        >
+          Login
+        </button>
+
+      </form>
+    </div>
+
+    <div class="bg-yellow-200 border border-yellow-300 shadow-md
+                rounded-lg p-4 w-[300px] rotate-2">
+      <p class="font-semibold text-gray-800 mb-2">Login Info</p>
+      <p class="text-sm text-gray-700">
+        <strong>gebruikersnaam:</strong> admin<br>
+        <strong>wachtwoord:</strong> admin123
+      </p>
+    </div>
+
+  </div>
+
+  <script>
+    const form = document.getElementById("loginForm");
+    const error = document.getElementById("error");
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      if (username === "admin" && password === "admin123") {
+        localStorage.setItem("isAdmin", "true");
+        window.location.href = "admin.html";
+      } else {
+        error.classList.remove("hidden");
+      }
+    });
+  </script>
+
+</body>
+</html>

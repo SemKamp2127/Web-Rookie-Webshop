@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Cart</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="./css/output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+
+    <a href="index.html"
+       class="inline-block mb-6 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+        Terug naar de winkel
+    </a>
+
+    <h1 class="text-3xl font-bold mb-6">WinkelWagen</h1>
+
+    <div id="cart-items" class="space-y-4 mb-8"></div>
+
+    <div class="bg-white p-6 rounded-xl shadow max-w-md">
+        <h2 class="text-xl font-semibold mb-2">Totaal</h2>
+        <p id="cart-total" class="text-2xl font-bold">€0.00</p>
+
+        <button onclick="placeOrder()"
+            class="mt-4 w-full bg-green-600 text-white py-3 rounded-xl font-semibold hover:bg-green-700">
+            Bestelling plaatsen
+        </button>
+    </div>
+
+    <script>
+        const cartContainer = document.getElementById("cart-items");
+        const totalEl = document.getElementById("cart-total");
+
+        function getCart() {
+            return JSON.parse(localStorage.getItem("cart")) || [];
+        }
+
+        function saveCart(cart) {
+            localStorage.setItem("cart", JSON.stringify(cart));
+        }
+
+        function renderCart() {
+            const cart = getCart();
+            cartContainer.innerHTML = "";
+            let total = 0;
+
+            if (cart.length === 0) {
+                cartContainer.innerHTML = "<p>Je mandje is leeg.</p>";
+                totalEl.textContent = "€0.00";
+                return;
+            }
+
+            cart.forEach((item, index) => {
+                total += item.price * item.quantity;
+
+                cartContainer.innerHTML += `
+                    <div class="bg-white p-4 rounded-xl shadow flex gap-4 items-center">
+                        <img src="${item.image}" class="w-20 h-20 object-contain">
+
+                        <div class="flex-1">
+                            <h3 class="font-semibold">${item.title}</h3>
+                            <p class="text-gray-600">€${item.price}</p>
+
+                            <div class="flex items-center gap-2 mt-2">
+                                <button onclick="changeQty(${index}, -1)"
+                                    class="px-2 bg-gray-300 rounded">−</button>
+                                <span>${item.quantity}</span>
+                                <button onclick="changeQty(${index}, 1)"
+                                    class="px-2 bg-gray-300 rounded">+</button>
+                            </div>
+                        </div>
+
+                        <button onclick="removeItem(${index})"
+                            class="bg-red-600 text-white px-3 py-1 rounded-lg hover:bg-red-700">
+                            Remove
+                        </button>
+                    </div>
+                `;
+            });
+
+            totalEl.textContent = "€" + total.toFixed(2);
+        }
+
+        function removeItem(index) {
+            const cart = getCart();
+            cart.splice(index, 1);
+            saveCart(cart);
+            renderCart();
+        }
+
+        function changeQty(index, amount) {
+            const cart = getCart();
+            cart[index].quantity += amount;
+
+            if (cart[index].quantity <= 0) {
+                cart.splice(index, 1);
+            }
+
+            saveCart(cart);
+            renderCart();
+        }
+
+        renderCart();
+
+        function getOrders() {
+            return JSON.parse(localStorage.getItem("orders")) || [];
+        }
+
+        function saveOrders(orders) {
+            localStorage.setItem("orders", JSON.stringify(orders));
+        }
+
+        function placeOrder() {
+            const cart = getCart();
+
+            if (cart.length === 0) {
+                alert("Je mandje is leeg");
+                return;
+            }
+
+            const orders = getOrders();
+
+            const newOrder = {
+                id: Date.now(),
+                items: cart,
+                date: new Date().toLocaleString()
+            };
+
+            orders.push(newOrder);
+            saveOrders(orders);
+
+            saveCart([]);
+            renderCart();
+
+            alert("Bestelling geplaatst");
+        }
+    </script>
+
+</body>
+</html>

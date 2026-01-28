@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./output.css" rel="stylesheet">
+    <script src="https://unpkg.com/ionicons@4.5.10-0/dist/ionicons.js"></script>
+    <script defer src="app.js"></script>
+
+</head>
+
+<body class="bg-gray min-h-screen">
+<header class="bg-white/30 backdrop-blur-md sticky top-0 z-50">
+    <nav class="flex justify-between items-center w-[92%] mx-auto">
+
+        <a href="index.html" class="flex items-center">
+            <img
+                class="w-18 cursor-pointer"
+                src="https://stores4you.nl/wp-content/uploads/2024/09/hs_logo_s4y_150dpi_no-borders.webp"
+                alt="Home"
+            >
+        </a>
+
+        <div class="hidden md:flex items-center gap-4">
+            <a href="cart.html"
+               class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition">
+                Cart
+            </a>
+
+            <a href="login.html"
+               class="bg-pink-500 text-white px-5 py-2 rounded-full hover:bg-pink-600 transition">
+                Admin Paneel
+            </a>
+        </div>
+
+        <ion-icon
+            onclick="onToggleMenu(this)"
+            name="menu"
+            class="text-3xl cursor-pointer md:hidden">
+        </ion-icon>
+    </nav>
+
+    <div class="hidden nav-links duration-500 bg-white/20 backdrop-blur-md py-10 left-0 w-full px-5">
+        <div class="flex flex-col items-center gap-6">
+            <a href="cart.html"
+               class="w-full text-center bg-green-600 text-white px-4 py-3 rounded-lg hover:bg-green-700">
+                Cart
+            </a>
+
+            <a href="login.html"
+               class="w-full text-center bg-pink-500 text-white px-5 py-3 rounded-full hover:bg-pink-600">
+                Admin Paneel
+            </a>
+        </div>
+    </div>
+</header>
+
+
+
+    <div class="flex justify-center my-[200px]">
+        <div class="text-center">
+            <h1 class="text-4xl">Welkom bij de webshop!</h1>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 py-12">
+        <div class="grid gap-6 md:grid-cols-3">
+        
+        <div class="bg-white rounded-xl shadow p-6">
+        <h3 class="text-xl font-semibold mb-2">Card Titel 1</h3>
+        <p class="text-gray-600 mb-4">
+            Dit is een beschrijving van de card. Je kunt hier elke content plaatsen.
+        </p>
+        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            Lees meer
+        </button>
+        </div>
+
+        <div class="bg-white rounded-xl shadow p-6">
+        <h3 class="text-xl font-semibold mb-2">Card Titel 2</h3>
+        <p class="text-gray-600 mb-4">
+            Een tweede card voor extra informatie. Volledig responsive!
+        </p>
+        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            Lees meer
+        </button>
+        </div>
+
+        <div class="bg-white rounded-xl shadow p-6">
+        <h3 class="text-xl font-semibold mb-2">Card Titel 3</h3>
+        <p class="text-gray-600 mb-4">
+            Dit is card nummer drie. Pas hem aan zoals je wilt.
+        </p>
+        <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+            Lees meer
+        </button>
+        </div>
+
+        </div>
+    </div>
+
+    <div id="product-container" class="grid gap-6 md:grid-cols-3 max-w-6xl mx-auto px-4 py-12"></div>
+
+
+
+    <script>
+        const navLinks = document.querySelector('.nav-links')
+        function onToggleMenu(e){
+            e.name = e.name === 'menu' ? 'close' : 'menu'
+            navLinks.classList.toggle('hidden')
+        }
+    </script>
+</body>
+
+</html>

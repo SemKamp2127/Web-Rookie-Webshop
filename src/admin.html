@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="./css/output.css" rel="stylesheet">
+    <script defer src="./js/app.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-8">
+
+    <a href="index.html"
+       class="inline-flex items-center mb-6 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+        Terug naar de winkel
+    </a>
+
+    <h1 class="text-3xl font-bold mb-8">Admin Paneel</h1>
+
+    <div class="bg-white p-6 rounded-xl shadow mb-12 max-w-xl border border-red-200">
+        <h2 class="text-xl font-semibold mb-2 text-red-600">Producten resetten</h2>
+
+        <button onclick="resetProducts()"
+                class="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700">
+            Producten opslag resetten
+        </button>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow mb-12 max-w-xl">
+        <h2 class="text-xl font-semibold mb-4">product toevoegen</h2>
+
+        <form id="addProductForm" class="space-y-4">
+            <input type="text" id="title" placeholder="Title" required
+                   class="w-full border rounded-lg p-2">
+
+            <input type="number" id="price" placeholder="Price" step="0.01" required
+                   class="w-full border rounded-lg p-2">
+
+            <input type="text" id="image" placeholder="Image URL" required
+                   class="w-full border rounded-lg p-2">
+
+            <textarea id="description" placeholder="Description" required
+                      class="w-full border rounded-lg p-2"></textarea>
+
+            <button type="submit"
+                    class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700">
+                Add Product
+            </button>
+        </form>
+    </div>
+
+    <div class="mb-12">
+        <h2 class="text-2xl font-semibold mb-4">Bestaande producten</h2>
+        <div id="admin-products"
+             class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+
+    <div>
+        <h2 class="text-2xl font-semibold mb-4">bestellingen</h2>
+        <div id="admin-orders" class="space-y-6"></div>
+    </div>
+
+    <script>
+        const adminContainer = document.getElementById("admin-products");
+        const ordersContainer = document.getElementById("admin-orders");
+        const form = document.getElementById("addProductForm");
+
+        function resetProducts() {
+            if (!confirm("Are you sure you want to reset all products?")) return;
+
+            localStorage.removeItem("products");
+            renderAdminProducts();
+
+            loadProducts();
+            alert("Products have been reset. The shop will reload from the API.");
+            location.reload()
+        }
+
+        function getProducts() {
+            return JSON.parse(localStorage.getItem("products")) || [];
+        }
+
+        function saveProducts(products) {
+            localStorage.setItem("products", JSON.stringify(products));
+        }
+
+        function renderAdminProducts() {
+            const products = getProducts();
+            adminContainer.innerHTML = "";
+
+            if (products.length === 0) {
+                adminContainer.innerHTML =
+                    "<p class='text-gray-500'>No products found (API will reload).</p>";
+                return;
+            }
+
+            products.forEach((product, index) => {
+                adminContainer.innerHTML += `
+                    <div class="bg-white rounded-xl shadow p-4">
+                        <img src="${product.image}"
+                            class="h-40 w-full object-contain mb-2">
+
+                        <h3 class="font-semibold">${product.title}</h3>
+                        <p class="text-sm text-gray-600">€${product.price}</p>
+
+                        <div class="flex gap-2 mt-3">
+                            <button
+                                onclick="editProduct(${index})"
+                                class="w-1/2 bg-blue-600 text-white py-1 rounded-lg hover:bg-blue-700">
+                                Edit
+                            </button>
+
+                            <button
+                                onclick="deleteProduct(${index})"
+                                class="w-1/2 bg-red-600 text-white py-1 rounded-lg hover:bg-red-700">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function editProduct(index) {
+            const products = getProducts();
+            const product = products[index];
+
+            const newTitle = prompt("Nieuwe productnaam:", product.title);
+            if (newTitle === null) return;
+
+            const newPrice = prompt("Nieuwe prijs:", product.price);
+            if (newPrice === null) return;
+
+            const newImage = prompt("Nieuwe image URL:", product.image);
+            if (newImage === null) return;
+
+            products[index] = {
+                ...product,
+                title: newTitle,
+                price: parseFloat(newPrice),
+                image: newImage
+            };
+
+            saveProducts(products);
+            renderAdminProducts();
+        }
+
+        function deleteProduct(index) {
+            const products = getProducts();
+            products.splice(index, 1);
+            saveProducts(products);
+            renderAdminProducts();
+        }
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const newProduct = {
+                title: title.value,
+                price: parseFloat(price.value),
+                image: image.value,
+                description: description.value
+            };
+
+            const products = getProducts();
+            products.push(newProduct);
+            saveProducts(products);
+
+            form.reset();
+            renderAdminProducts();
+        });
+
+        function getOrders() {
+            return JSON.parse(localStorage.getItem("orders")) || [];
+        }
+
+        function saveOrders(orders) {
+            localStorage.setItem("orders", JSON.stringify(orders));
+        }
+
+        function deleteOrder(orderId) {
+            if (!confirm("wiil je deze bestelling verwijderen?")) return;
+
+            const orders = getOrders().filter(order => order.id !== orderId);
+            saveOrders(orders);
+            renderOrders();
+        }
+
+        function renderOrders() {
+            const orders = getOrders();
+            ordersContainer.innerHTML = "";
+
+            if (orders.length === 0) {
+                ordersContainer.innerHTML = "<p>Nog geen bestellingen.</p>";
+                return;
+            }
+
+            orders.forEach(order => {
+                let total = 0;
+                let itemsHtml = "";
+
+                order.items.forEach(item => {
+                    total += item.price * item.quantity;
+                    itemsHtml += `
+                        <li class="text-sm">
+                            ${item.title} × ${item.quantity}
+                            — €${(item.price * item.quantity).toFixed(2)}
+                        </li>
+                    `;
+                });
+
+                ordersContainer.innerHTML += `
+                    <div class="bg-white p-6 rounded-xl shadow">
+                        <p class="text-sm text-gray-500 mb-2">
+                            <strong>Order ID:</strong> ${order.id}<br>
+                            <strong>Date:</strong> ${order.date}
+                        </p>
+
+                        <ul class="list-disc list-inside mb-3">
+                            ${itemsHtml}
+                        </ul>
+
+                        <p class="font-semibold mb-3">
+                            Total: €${total.toFixed(2)}
+                        </p>
+
+                        <button
+                            onclick="deleteOrder(${order.id})"
+                            class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
+                            Delete Order
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        renderAdminProducts();
+        renderOrders();
+    </script>
+
+</body>
+</html>
