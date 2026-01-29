@@ -31,16 +31,16 @@
         <h2 class="text-xl font-semibold mb-4">product toevoegen</h2>
 
         <form id="addProductForm" class="space-y-4">
-            <input type="text" id="title" placeholder="Title" required
+            <input type="text" id="title" placeholder="Titel" required
                    class="w-full border rounded-lg p-2">
 
-            <input type="number" id="price" placeholder="Price" step="0.01" required
+            <input type="number" id="price" placeholder="prijs" step="0.01" required
                    class="w-full border rounded-lg p-2">
 
-            <input type="text" id="image" placeholder="Image URL" required
+            <input type="text" id="image" placeholder="afbeelding URL" required
                    class="w-full border rounded-lg p-2">
 
-            <textarea id="description" placeholder="Description" required
+            <textarea id="description" placeholder="beschrijving" required
                       class="w-full border rounded-lg p-2"></textarea>
 
             <button type="submit"
@@ -155,6 +155,26 @@
 
         form.addEventListener("submit", (e) => {
             e.preventDefault();
+
+           if (title.value === "") {
+                alert("Er is geen titel toegevoegd!");
+                return;
+           };
+
+           if (Number.isNaN(price.value) || price.value === "") {
+                alert("Prijs is geen nummer!");
+                return;
+           };
+
+           if (image.value === "") {
+                alert("Er is geen afbeelding URL toegevoegd!");
+                return;
+           }
+
+           if (description.value === "") {
+                alert("Er is geen beschrijving toegevoegd!");
+                return;
+           }
 
             const newProduct = {
                 title: title.value,
