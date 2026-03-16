@@ -23,12 +23,16 @@ async function loadProducts() {
 
     } catch (error) {
         console.error("error bij het ophalen van producten:", error);
-        container.innerHTML = "<p>Kan producten niet inladen.</p>";
+        if(container){
+            container.innerHTML = "<p>Kan producten niet inladen.</p>";
+        }
     }
 }
 
 function renderProducts(products) {
-    container.innerHTML = "";
+    if(container){
+        container.innerHTML =  "";
+    }
 
     products.forEach(product => {
         const card = `

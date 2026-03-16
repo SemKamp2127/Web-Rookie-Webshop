@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="./css/output.css" rel="stylesheet">
-    <script defer src="./js/app.js"></script>
 </head>
 <body class="bg-gray-100 min-h-screen p-8">
 
@@ -65,16 +64,36 @@
         const adminContainer = document.getElementById("admin-products");
         const ordersContainer = document.getElementById("admin-orders");
         const form = document.getElementById("addProductForm");
+        const API_URL = "https://fakestoreapi.com/products?limit=6";
 
         function resetProducts() {
             if (!confirm("Are you sure you want to reset all products?")) return;
 
             localStorage.removeItem("products");
-            renderAdminProducts();
 
             loadProducts();
             alert("Products have been reset. The shop will reload from the API.");
-            location.reload()
+            // location.reload()
+        }
+
+        async function loadProducts() {
+            try {
+                let products = getProducts();
+
+                if (products.length === 0) {
+                    const response = await fetch(API_URL);
+                    products = await response.json();
+                    saveProducts(products);
+
+                    renderAdminProducts();
+                }
+
+            } catch (error) {
+                console.error("error bij het ophalen van producten:", error);
+                if(container){
+                    container.innerHTML = "<p>Kan producten niet inladen.</p>";
+                }
+            }
         }
 
         function getProducts() {
